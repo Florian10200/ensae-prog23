@@ -74,8 +74,24 @@ class Graph:
     def get_path_with_power(self, src, dest, power):
         raise NotImplementedError
     
+    def exploration(self,s,visited):
+        voisins_de_s = []
+        for voisin in self.graph[s]:
+            nom_voisin = voisin[0]
+            if visited[nom_voisin] == False:
+                voisins_de_s = voisins_de_s + exploration(self,voisin,visited)
+                visited[voisin] = True
+        return(voisin_de_s)
 
     def connected_components(self):
+     
+        
+
+
+
+        
+
+        
         raise NotImplementedError
 
 
