@@ -72,6 +72,30 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
+        liste_trajet = []
+        noeud_visite = {noeud : False for noeud in self.nodes}
+
+        def dfs(noeud):
+            trajet = [noeud]
+            for voisin in self.graph[noeud]:
+                num_voisin,puissance_voisin = voisin[0],voisin[1]
+                if not noeud_visite[num_voisin]:
+                    noeud_visite[num_voisin] = True
+                    if puissance <= power:
+                       trajet += dfs(num_voisin)
+            return trajet
+        
+        for noeud in self.nodes:
+            if noeud = dest:
+            
+            if not noeud_visite[noeud]:
+                liste_trajet.append(dfs(noeud))
+
+        return liste_trajet
+    
+
+
+
         raise NotImplementedError
     
 
@@ -85,8 +109,8 @@ class Graph:
                 voisin = voisin[0]
                 if not noeud_visite[voisin]:
                     noeud_visite[voisin] = True
-                    composante += dfs[voisin]
-                return composante
+                    composante += dfs(voisin)
+            return composante
         
         for noeud in self.nodes:
             if not noeud_visite[noeud]:
