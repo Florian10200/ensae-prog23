@@ -72,26 +72,21 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
-        liste_trajet = []
         noeud_visite = {noeud : False for noeud in self.nodes}
 
-        def dfs(noeud):
-            trajet = [noeud]
+        def recherche_de_chemin(noeud, chemin):
+            if noeud == dest:
+                return chemin
             for voisin in self.graph[noeud]:
-                num_voisin,puissance_voisin = voisin[0],voisin[1]
-                if not noeud_visite[num_voisin]:
-                    noeud_visite[num_voisin] = True
-                    if puissance <= power:
-                       trajet += dfs(num_voisin)
-            return trajet
-        
-        for noeud in self.nodes:
-            if noeud = dest:
-            
-            if not noeud_visite[noeud]:
-                liste_trajet.append(dfs(noeud))
+                voisin, power_min, dist = voisin[0], voisin[1], voisin[2]
+                if not noeud_visite[voisin] and power_min <= power:
+                    noeud_visite[voisin] = True
+                    resultat = recherche_de_chemin(voisin, chemin+[voisin])
+                    if resultat is not None:
+                        return resultat
+            return None
 
-        return liste_trajet
+        return recherche_de_chemin(src, [src])
     
 
 
@@ -135,10 +130,49 @@ class Graph:
         """
         return set(map(frozenset, self.connected_components()))
     
+
+
     def min_power(self, src, dest):
-        """
-        Should return path, min_power. 
-        """
+        liste_puissance = []
+
+
+        def get_path_with_power(self, src, dest, power):
+            noeud_visite = {noeud : False for noeud in self.nodes}
+            
+            def recherche_de_chemin(noeud, chemin):
+                if noeud == dest:
+                    return chemin
+                for voisin in self.graph[noeud]:
+                    voisin, power_min, dist = voisin[0], voisin[1], voisin[2]
+                    if not noeud_visite[voisin] and power_min <= power:
+                        noeud_visite[voisin] = True
+                        resultat = recherche_de_chemin(voisin, chemin+[voisin])
+                        if resultat is not None:
+                            return resultat
+                return None
+
+            return recherche_de_chemin(src, [src])
+
+        for noeud in self.nodes:
+            for voisin in self.graph[noeud]:
+                liste_puissance.append(voisin[1])
+        F = frozenset(liste_puissance)
+        liste_puissance = list(F)
+        liste_puissance = sorted(liste_puissance)
+        gauche,droite = 0,(len(liste_puissance)-1)
+        if get_path_with_power(self, src, dest, liste_puissance[-1]) == None:
+            return None
+        else:
+            while gauche <= droite:
+                milieu = (gauche+droite)//2
+                chemin = get_path_with_power(self, src, dest, liste_puissance[milieu])
+                if chemin == None:
+                    gauche = milieu +1
+                else:
+                    droite = milieu -1
+            return (chemin, liste_puissance[milieu])
+
+
         raise NotImplementedError
 
 
