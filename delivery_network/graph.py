@@ -72,54 +72,44 @@ class Graph:
     
 
     def get_path_with_power(self, src, dest, power):
-        noeud_visite = {noeud : False for noeud in self.nodes}
+        visited_nodes = {node : False for node in self.nodes}
 
-        def recherche_de_chemin(noeud, chemin):
-            if noeud == dest:
-                return chemin
-            for voisin in self.graph[noeud]:
-                voisin, power_min, dist = voisin[0], voisin[1], voisin[2]
-                if not noeud_visite[voisin] and power_min <= power:
-                    noeud_visite[voisin] = True
-                    resultat = recherche_de_chemin(voisin, chemin+[voisin])
-                    if resultat is not None:
-                        return resultat
+        def finding_a_path(node, path):
+            if node == dest:
+                return path
+            for neighbor in self.graph[node]:
+                neighbor, power_min, dist = neighbor[0], neighbor[1], neighbor[2]
+                if not visited_nodes[neighbor] and power_min <= power:
+                    visited_nodes[neighbor] = True
+                    result = finding_a_path(neighbor, path+[neighbor])
+                    if result is not None:
+                        return result
             return None
 
-        return recherche_de_chemin(src, [src])
-    
-
-
+        return finding_a_path(src, [src])
 
         raise NotImplementedError
     
 
     def connected_components(self):
-        liste_composante = []
-        noeud_visite = {noeud : False for noeud in self.nodes}
+        components_list = []
+        visited_nodes = {node : False for node in self.nodes}
 
-        def dfs(noeud):
-            composante = [noeud]
-            for voisin in self.graph[noeud]:
-                voisin = voisin[0]
-                if not noeud_visite[voisin]:
-                    noeud_visite[voisin] = True
-                    composante += dfs(voisin)
-            return composante
+        def exploration(node):
+            component = [node]
+            for neighbor in self.graph[node]:
+                neighbor = neighbor[0]
+                if not visited_nodes[neighbor]:
+                    visited_nodes[neighbor] = True
+                    component += exploration(neighbor)
+            return component
         
-        for noeud in self.nodes:
-            if not noeud_visite[noeud]:
-                liste_composante.append(dfs(noeud))
+        for node in self.nodes:
+            if not visited_nodes[node]:
+                components_list.append(exploration(node))
 
-        return liste_composante
-     
-        
+        return components_list
 
-
-
-        
-
-        
         raise NotImplementedError
 
 
@@ -131,52 +121,49 @@ class Graph:
         return set(map(frozenset, self.connected_components()))
     
 
-
     def min_power(self, src, dest):
-        liste_puissance = []
-
+        power_list = []
 
         def get_path_with_power(self, src, dest, power):
-            noeud_visite = {noeud : False for noeud in self.nodes}
+            visited_nodes = {node : False for node in self.nodes}
             
-            def recherche_de_chemin(noeud, chemin):
-                if noeud == dest:
-                    return chemin
-                for voisin in self.graph[noeud]:
-                    voisin, power_min, dist = voisin[0], voisin[1], voisin[2]
-                    if not noeud_visite[voisin] and power_min <= power:
-                        noeud_visite[voisin] = True
-                        resultat = recherche_de_chemin(voisin, chemin+[voisin])
-                        if resultat is not None:
-                            return resultat
+            def finding_a_path(node, path):
+                if node == dest:
+                    return path
+                for neighbor in self.graph[node]:
+                    neighbor, power_min, dist = neighbor
+                    if not visited_nodes[neighbor] and power_min <= power:
+                        visited_nodes[neighbor] = True
+                        result = finding_a_path(neighbor, path+[neighbor])
+                        if result is not None:
+                            return result
                 return None
 
-            return recherche_de_chemin(src, [src])
+            return finding_a_path(src, [src])
         
-        def recherche_binaire(self,L):
-            gauche,droite = 0,(len(L)-1)
-            while gauche != droite:
-                milieu = (gauche+droite)//2
-                chemin = get_path_with_power(self, src, dest, L[milieu])
-                if chemin == None:
-                    gauche = milieu+1
+        def binary_search(self,L): #L is a liste
+            left,right = 0,(len(L)-1)
+            while left != right:
+                middle = (left+right)//2
+                path = get_path_with_power(self, src, dest, L[middle])
+                if path == None:
+                    left = middle+1
                 else:
-                    droite = milieu
-            return(chemin,L[gauche])
+                    right = middle
+            return(path,L[left])
 
 
 
-        for noeud in self.nodes:
-            for voisin in self.graph[noeud]:
-                liste_puissance.append(voisin[1])
-        F = frozenset(liste_puissance)
-        liste_puissance = sorted(list(F))
-        puissance_max = liste_puissance[-1]
-        if get_path_with_power(self, src, dest, puissance_max) == None:
+        for node in self.nodes:
+            for neighbor in self.graph[node]:
+                power_list.append(neighbor[1])
+        F = frozenset(power_list)
+        power_list = sorted(list(F))
+        power_max = power_list[-1]
+        if get_path_with_power(self, src, dest, power_max) == None: #to avoid the case where there is no path
             return None
         else:
-            return recherche_binaire(self,liste_puissance)
-
+            return binary_search(self,power_list)
 
         raise NotImplementedError
 
