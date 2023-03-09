@@ -152,25 +152,30 @@ class Graph:
                 return None
 
             return recherche_de_chemin(src, [src])
+        
+        def recherche_binaire(self,L):
+            gauche,droite = 0,(len(L)-1)
+            while gauche != droite:
+                milieu = (gauche+droite)//2
+                chemin = get_path_with_power(self, src, dest, L[milieu])
+                if chemin == None:
+                    gauche = milieu+1
+                else:
+                    droite = milieu
+            return(chemin,L[gauche])
+
+
 
         for noeud in self.nodes:
             for voisin in self.graph[noeud]:
                 liste_puissance.append(voisin[1])
         F = frozenset(liste_puissance)
-        liste_puissance = list(F)
-        liste_puissance = sorted(liste_puissance)
-        gauche,droite = 0,(len(liste_puissance)-1)
-        if get_path_with_power(self, src, dest, liste_puissance[-1]) == None:
+        liste_puissance = sorted(list(F))
+        puissance_max = liste_puissance[-1]
+        if get_path_with_power(self, src, dest, puissance_max) == None:
             return None
         else:
-            while gauche <= droite:
-                milieu = (gauche+droite)//2
-                chemin = get_path_with_power(self, src, dest, liste_puissance[milieu])
-                if chemin == None:
-                    gauche = milieu +1
-                else:
-                    droite = milieu -1
-            return (chemin, liste_puissance[milieu])
+            return recherche_binaire(self,liste_puissance)
 
 
         raise NotImplementedError
