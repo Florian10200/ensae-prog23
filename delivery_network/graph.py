@@ -208,7 +208,7 @@ def graph_from_file(filename):
     return g
 
 
-    def Dijkstra(self,src,dest):
+    def Dijkstra(self,src,dest,power):
         infini = 10^9
         distance_list = [infini for node in self.nodes]
         distance_list[src] = 0
@@ -223,22 +223,29 @@ def graph_from_file(filename):
                     vertex = node
             return(vertex)
 
-        def weight(node1,node2):
+        def dist(node1,node2):
             for neighbor in self.graph[node1]:
                 if neighbor[0] == node2:
                     return neighbor[2]
             return("Erreur")
 
+        def power_fct(node1,node2):
+            for neighbor in self.graph[node1]:
+                if neighbor[0] == node2:
+                    return neighbor[1]
+            return("Erreur")
+
         def distance_update(node1,node2):
-            if distance_list[node2] > distance_list[node1] + weight(node1,node2):
-                distance_list[node2] = distance_list[node1] + weight(node1,node2)
+            if (distance_list[node2] > distance_list[node1] + dist(node1,node2)) and (power_fct((node1),node(2)) < power) :
+                distance_list[node2] = distance_list[node1] + dist(node1,node2)
                 predecessor[node2] = node1
 
         my_non_reached_node = (self.nodes).remove(src)
         while my_non_reached_node != []:
             node_min = finding_min(my_non_reached_node)
             my_non_reached_node.remove(node_min)
-            for neighbor_of_node_min:
+            for neighbor in self.graph[node_min]:
+                neighbor = neighbor[0]
                 distance_update(node_min, neighbor)
         moving_node = dest
         min_path = []
@@ -246,6 +253,7 @@ def graph_from_file(filename):
             min_path = [moving_node] + min_path
             moving_node = predecessor[moving_node]
         min_path = [src] + min_path
+        return(min_path)
 
 
 
