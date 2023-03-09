@@ -69,11 +69,15 @@ class Graph:
         self.nb_edges += 1
 
 
-    
-
     def get_path_with_power(self, src, dest, power):
         visited_nodes = {node : False for node in self.nodes}
+        visited_nodes[src] = True
 
+        infini = 10^9
+        distance_list = [infini for node in self.nodes]
+        distance_list[src] = 0
+
+            
         def finding_a_path(node, path):
             if node == dest:
                 return path
@@ -202,3 +206,47 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
+
+
+    def Dijkstra(self,src,dest):
+        infini = 10^9
+        distance_list = [infini for node in self.nodes]
+        distance_list[src] = 0
+        predecessor = [infini for node in self.nodes]
+
+        def finding_min(non_reached_nodes):
+            mini = infini
+            vertex = -1
+            for node in non_reached_nodes:
+                if distance_list[node] < mini:
+                    mini = distance_list[node]
+                    vertex = node
+            return(vertex)
+
+        def weight(node1,node2):
+            for neighbor in self.graph[node1]:
+                if neighbor[0] == node2:
+                    return neighbor[2]
+            return("Erreur")
+
+        def distance_update(node1,node2):
+            if distance_list[node2] > distance_list[node1] + weight(node1,node2):
+                distance_list[node2] = distance_list[node1] + weight(node1,node2)
+                predecessor[node2] = node1
+
+        my_non_reached_node = (self.nodes).remove(src)
+        while my_non_reached_node != []:
+            node_min = finding_min(my_non_reached_node)
+            my_non_reached_node.remove(node_min)
+            for neighbor_of_node_min:
+                distance_update(node_min, neighbor)
+        moving_node = dest
+        min_path = []
+        while moving_node != src:
+            min_path = [moving_node] + min_path
+            moving_node = predecessor[moving_node]
+        min_path = [src] + min_path
+
+
+
+ 
