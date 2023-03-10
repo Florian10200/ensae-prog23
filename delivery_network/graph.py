@@ -1,29 +1,6 @@
 class Graph:
-    """
-    A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented. 
-    Attributes: 
-    -----------
-    nodes: NodeType
-        A list of nodes. Nodes can be of any immutable type, e.g., integer, float, or string.
-        We will usually use a list of integers 1, ..., n.
-    graph: dict
-        A dictionnary that contains the adjacency list of each node in the form
-        graph[node] = [(neighbor1, p1, d1), (neighbor1, p1, d1), ...]
-        where p1 is the minimal power on the edge (node, neighbor1) and d1 is the distance on the edge
-    nb_nodes: int
-        The number of nodes.
-    nb_edges: int
-        The number of edges. 
-    """
 
     def __init__(self, nodes=[]):
-        """
-        Initializes the graph with a set of nodes, and no edges. 
-        Parameters: 
-        -----------
-        nodes: list, optional
-            A list of nodes. Default is empty.
-        """
         self.nodes = nodes
         self.graph = dict([(n, []) for n in nodes])
         self.nb_nodes = len(nodes)
@@ -31,7 +8,6 @@ class Graph:
     
 
     def __str__(self):
-        """Prints the graph as a list of neighbors for each node (one per line)"""
         if not self.graph:
             output = "The graph is empty"            
         else:
@@ -41,20 +17,6 @@ class Graph:
         return output
     
     def add_edge(self, node1, node2, power_min, dist=1):
-        """
-        Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
-
-        Parameters: 
-        -----------
-        node1: NodeType
-            First end (node) of the edge
-        node2: NodeType
-            Second end (node) of the edge
-        power_min: numeric (int or float)
-            Minimum power on this edge
-        dist: numeric (int or float), optional
-            Distance between node1 and node2 on the edge. Default is 1.
-        """
         if node1 not in self.graph:
             self.graph[node1] = []
             self.nb_nodes += 1
@@ -72,12 +34,7 @@ class Graph:
     def get_path_with_power(self, src, dest, power):
         visited_nodes = {node : False for node in self.nodes}
         visited_nodes[src] = True
-
-        infini = 10^9
-        distance_list = [infini for node in self.nodes]
-        distance_list[src] = 0
-
-            
+   
         def finding_a_path(node, path):
             if node == dest:
                 return path
@@ -136,8 +93,6 @@ class Graph:
                     right = middle
             return(path,L[left])
 
-
-
         for node in self.nodes:
             for neighbor in self.graph[node]:
                 power_list.append(neighbor[1])
@@ -149,34 +104,16 @@ class Graph:
         else:
             return binary_search(self,power_list)
 
-
-def graph_from_file(filename):
-    
-    with open(filename, "r") as file:
-        n, m = map(int, file.readline().split())
-        g = Graph(range(1, n+1))
-        for _ in range(m):
-            edge = list(map(int, file.readline().split()))
-            if len(edge) == 3:
-                node1, node2, power_min = edge
-                g.add_edge(node1, node2, power_min) # will add dist=1 by default
-            elif len(edge) == 4:
-                node1, node2, power_min, dist = edge
-                g.add_edge(node1, node2, power_min, dist)
-            else:
-                raise Exception("Format incorrect")
-    return g
-
-
     def Dijkstra(self,src,dest,power):
-        infini = 10^9
-        distance_list = [infini for node in self.nodes]
+        infinity = 1000000000
+        distance_list = ["décalage"] + [infinity for node in self.nodes]
         distance_list[src] = 0
-        predecessor = [infini for node in self.nodes]
+        predecessor = {node : node for node in self.nodes}
 
         def finding_min(non_reached_nodes):
-            mini = infini
+            mini = infinity
             vertex = -1
+            print("distance_list",distance_list)
             for node in non_reached_nodes:
                 if distance_list[node] < mini:
                     mini = distance_list[node]
@@ -196,13 +133,15 @@ def graph_from_file(filename):
             return("Erreur")
 
         def distance_update(node1,node2):
-            if (distance_list[node2] > distance_list[node1] + dist(node1,node2)) and (power_fct((node1),node(2)) < power) :
+            if (distance_list[node2] > distance_list[node1] + dist(node1,node2)) and (power_fct((node1),node2) < power) :
                 distance_list[node2] = distance_list[node1] + dist(node1,node2)
                 predecessor[node2] = node1
 
-        my_non_reached_node = (self.nodes).remove(src)
+        my_non_reached_node = (list(self.nodes))
         while my_non_reached_node != []:
+            print("my_non_reached_non",my_non_reached_node)
             node_min = finding_min(my_non_reached_node)
+            print("node_min",node_min)
             my_non_reached_node.remove(node_min)
             for neighbor in self.graph[node_min]:
                 neighbor = neighbor[0]
@@ -216,5 +155,20 @@ def graph_from_file(filename):
         return(min_path)
 
 
+def graph_from_file(filename):
 
+    with open(filename, "r") as file:
+        n, m = map(int, file.readline().split())
+        g = Graph(range(1, n+1))
+        for _ in range(m):
+            edge = list(map(int, file.readline().split()))
+            if len(edge) == 3:
+                node1, node2, power_min = edge
+                g.add_edge(node1, node2, power_min) # will add dist=1 by default
+            elif len(edge) == 4:
+                node1, node2, power_min, dist = edge
+                g.add_edge(node1, node2, power_min, dist)
+            else:
+                raise Exception("Format incorrect")
+    return g
  
