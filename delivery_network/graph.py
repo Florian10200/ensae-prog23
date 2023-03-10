@@ -118,38 +118,18 @@ class Graph:
 
 
     def connected_components_set(self):
-        """
-        The result should be a set of frozensets (one per component), 
-        For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
-        """
         return set(map(frozenset, self.connected_components()))
     
 
     def min_power(self, src, dest):
         power_list = []
 
-        def get_path_with_power(self, src, dest, power):
-            visited_nodes = {node : False for node in self.nodes}
-            
-            def finding_a_path(node, path):
-                if node == dest:
-                    return path
-                for neighbor in self.graph[node]:
-                    neighbor, power_min, dist = neighbor
-                    if not visited_nodes[neighbor] and power_min <= power:
-                        visited_nodes[neighbor] = True
-                        result = finding_a_path(neighbor, path+[neighbor])
-                        if result is not None:
-                            return result
-                return None
-
-            return finding_a_path(src, [src])
         
         def binary_search(self,L): #L is a liste
             left,right = 0,(len(L)-1)
             while left != right:
                 middle = (left+right)//2
-                path = get_path_with_power(self, src, dest, L[middle])
+                path = self.get_path_with_power( src, dest, L[middle])
                 if path == None:
                     left = middle+1
                 else:
@@ -164,34 +144,14 @@ class Graph:
         F = frozenset(power_list)
         power_list = sorted(list(F))
         power_max = power_list[-1]
-        if get_path_with_power(self, src, dest, power_max) == None: #to avoid the case where there is no path
+        if self.get_path_with_power(src, dest, power_max) == None: #to avoid the case where there is no path
             return None
         else:
             return binary_search(self,power_list)
 
-        raise NotImplementedError
-
 
 def graph_from_file(filename):
-    """
-    Reads a text file and returns the graph as an object of the Graph class.
-
-    The file should have the following format: 
-        The first line of the file is 'n m'
-        The next m lines have 'node1 node2 power_min dist' or 'node1 node2 power_min' (if dist is missing, it will be set to 1 by default)
-        The nodes (node1, node2) should be named 1..n
-        All values are integers.
-
-    Parameters: 
-    -----------
-    filename: str
-        The name of the file
-
-    Outputs: 
-    -----------
-    g: Graph
-        An object of the class Graph with the graph from file_name.
-    """
+    
     with open(filename, "r") as file:
         n, m = map(int, file.readline().split())
         g = Graph(range(1, n+1))
