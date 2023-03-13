@@ -117,7 +117,10 @@ class Graph:
                 if distance_dic[node] < mini:
                     mini = distance_dic[node]
                     min_dts_node = node
-            return(min_dts_node)
+            if min_dts_node == -1:
+                return None
+            else:
+                return min_dts_node
 
         def power_and_dist_between_nodes(self,node1,node2):
             for node in self.graph[node1]:
@@ -133,12 +136,17 @@ class Graph:
         my_non_reached_nodes = [node for node in self.nodes]
         while my_non_reached_nodes != []:
             nearest_neighbor = finding_min(my_non_reached_nodes)
-            print("nearest_neighbor",nearest_neighbor)
-            print("my_non_reached_node",my_non_reached_nodes)
-            my_non_reached_nodes.remove(nearest_neighbor)
-            for neighbor_of_nearest_neighbor in self.graph[nearest_neighbor]:
-                neighbor_of_nearest_neighbor = neighbor_of_nearest_neighbor[0]
-                update_distances(nearest_neighbor, neighbor_of_nearest_neighbor)
+            if nearest_neighbor == None:
+                my_non_reached_nodes = []
+            else:
+                print("nearest_neighbor",nearest_neighbor)
+                print("my_non_reached_node",my_non_reached_nodes)
+                print("distance_dic",distance_dic)
+                print()
+                my_non_reached_nodes.remove(nearest_neighbor)
+                for neighbor_of_nearest_neighbor in self.graph[nearest_neighbor]:
+                    neighbor_of_nearest_neighbor = neighbor_of_nearest_neighbor[0]
+                    update_distances(nearest_neighbor, neighbor_of_nearest_neighbor)
         shortest_path = []
         moving_node = dest
         while moving_node != src:
