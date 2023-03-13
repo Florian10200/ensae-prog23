@@ -1,3 +1,23 @@
+class union_find:
+
+    def __init__(self, parent_node = {}):
+        self.parent_node = parent_node
+
+    def make_set(self, u):
+        for i in u:
+            self.parent_node[i] = i
+
+    def find(self, k):
+        if self.parent_node[k] == k:
+            return k
+        return self.find(self.parent_node[k])
+
+    def op_union(self, a, b):
+        x = self.find(a)
+        y = self.find(b)
+        self.parent_node[x] = y
+
+
 class Graph:
 
     def __init__(self, nodes=[]):
@@ -15,6 +35,8 @@ class Graph:
             for source, destination in self.graph.items():
                 output += f"{source}-->{destination}\n"
         return output
+
+    
     
     def add_edge(self, node1, node2, power_min, dist=1):
         if node1 not in self.graph:
@@ -139,10 +161,6 @@ class Graph:
             if nearest_neighbor == None:
                 my_non_reached_nodes = []
             else:
-                print("nearest_neighbor",nearest_neighbor)
-                print("my_non_reached_node",my_non_reached_nodes)
-                print("distance_dic",distance_dic)
-                print()
                 my_non_reached_nodes.remove(nearest_neighbor)
                 for neighbor_of_nearest_neighbor in self.graph[nearest_neighbor]:
                     neighbor_of_nearest_neighbor = neighbor_of_nearest_neighbor[0]
@@ -157,13 +175,34 @@ class Graph:
         shortest_path.insert(0,src)
         return(shortest_path)
 
+    def kruskal(self):
 
-
-
-
-
-
+        def del_occur(L):
+            LL = []
+            for i in L:
+                if not i in LL:
+                    LL.append(i)
+            return(LL)
         
+        nb_nodes = self.nb_nodes(self)
+        mst = Graph(range(1,nb_nodes+1))
+        mst_union_find = union_find({})
+        for node in self.nodes:
+            mst_union_find.make_set(node)
+        edge_list = []
+        for node1 in self.nodes:
+            for node2 in self.graph[node1]:
+                node2,power_1_2 = node2[0],node2[1]
+                edge_list.append([power_1_2,max(node1,node2),min(node1,node2)])
+        edge_list_sorted_unic = del_occur(sorted(edgeedge_list))
+        final_edge_list = [edge.reverse() for edge in edge_list_sorted_unic]
+        for edge in final_edge_list:
+            node1,node2,power = edge
+            if mst_union_find.find(node1) != mst_union_find.find(node2):
+                mst.add_edge(node1, node2, power)
+                mst_union_find.op_union(node1, node2)
+        return(mst)
+
 
 
 def graph_from_file(filename):
