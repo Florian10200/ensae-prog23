@@ -105,54 +105,57 @@ class Graph:
             return binary_search(self,power_list)
 
     def Dijkstra(self,src,dest,power):
-        infinity = 1000000000
-        distance_list = ["décalage"] + [infinity for node in self.nodes]
-        distance_list[src] = 0
-        predecessor = {node : node for node in self.nodes}
+        infinity = 1000000000000
+        distance_dic = {node : infinity for node in self.nodes}
+        distance_dic[src] = 0
+        predecessor_dic = {None : node for node in self.nodes}
 
         def finding_min(non_reached_nodes):
             mini = infinity
-            vertex = -1
-            print("distance_list",distance_list)
+            min_dts_node = -1
             for node in non_reached_nodes:
-                if distance_list[node] < mini:
-                    mini = distance_list[node]
-                    vertex = node
-            return(vertex)
+                if distance_dic[node] < mini:
+                    mini = distance_dic[node]
+                    min_dts_node = node
+            return(min_dts_node)
 
-        def dist(node1,node2):
-            for neighbor in self.graph[node1]:
-                if neighbor[0] == node2:
-                    return neighbor[2]
-            return("Erreur")
+        def power_and_dist_between_nodes(self,node1,node2):
+            for node in self.graph[node1]:
+                if node[0] == node2:
+                    return(node[1],node[2])
 
-        def power_fct(node1,node2):
-            for neighbor in self.graph[node1]:
-                if neighbor[0] == node2:
-                    return neighbor[1]
-            return("Erreur")
+        def update_distances(node1,node2):
+            power_of_edge,dist_of_edge = power_and_dist_between_nodes(self, node1, node2)
+            if (distance_dic[node2] > distance_dic[node1] + dist_of_edge) and (power >= power_of_edge):
+                distance_dic[node2] = distance_dic[node1] + dist_of_edge
+                predecessor_dic[node2] = node1
 
-        def distance_update(node1,node2):
-            if (distance_list[node2] > distance_list[node1] + dist(node1,node2)) and (power_fct((node1),node2) < power) :
-                distance_list[node2] = distance_list[node1] + dist(node1,node2)
-                predecessor[node2] = node1
-
-        my_non_reached_node = (list(self.nodes))
-        while my_non_reached_node != []:
-            print("my_non_reached_non",my_non_reached_node)
-            node_min = finding_min(my_non_reached_node)
-            print("node_min",node_min)
-            my_non_reached_node.remove(node_min)
-            for neighbor in self.graph[node_min]:
-                neighbor = neighbor[0]
-                distance_update(node_min, neighbor)
+        my_non_reached_nodes = [node for node in self.nodes]
+        while my_non_reached_nodes != []:
+            nearest_neighbor = finding_min(my_non_reached_nodes)
+            print("nearest_neighbor",nearest_neighbor)
+            print("my_non_reached_node",my_non_reached_nodes)
+            my_non_reached_nodes.remove(nearest_neighbor)
+            for neighbor_of_nearest_neighbor in self.graph[nearest_neighbor]:
+                neighbor_of_nearest_neighbor = neighbor_of_nearest_neighbor[0]
+                update_distances(nearest_neighbor, neighbor_of_nearest_neighbor)
+        shortest_path = []
         moving_node = dest
-        min_path = []
         while moving_node != src:
-            min_path = [moving_node] + min_path
-            moving_node = predecessor[moving_node]
-        min_path = [src] + min_path
-        return(min_path)
+            if moving_node == None:
+                return("Pas de chemin possible")
+            shortest_path.insert(0,moving_node)
+            moving_node = predecessor_dic[moving_node]
+        shortest_path.insert(0,src)
+        return(shortest_path)
+
+
+
+
+
+
+
+        
 
 
 def graph_from_file(filename):
