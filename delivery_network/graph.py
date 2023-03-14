@@ -163,18 +163,19 @@ class Graph:
 
 # Question 6
 
-    def binary_search(self,L): #L is a liste
-        left,right = 0,(len(L)-1)
-        while left != right:
-            middle = (left+right)//2
-            path = self.get_path_with_power( src, dest, L[middle])
-            if path == None:
-                left = middle+1
-            else:
-                right = middle
-        return(path,L[left])
-
     def min_power(self, src, dest):
+
+        def binary_search(self,L): #L is a liste
+            left,right = 0,(len(L)-1)
+            while left != right:
+                middle = (left+right)//2
+                path = self.get_path_with_power( src, dest, L[middle])
+                if path == None:
+                    left = middle+1
+                else:
+                    right = middle
+            return(path,L[left])
+
         power_list = []
         for node in self.nodes:
             for neighbor in self.graph[node]:
@@ -235,7 +236,9 @@ class Graph:
 
 # Question 14
 
-
+    def min_power_optimized(self, src, dest):
+        g_mst = self.kruskal()
+        return min_power(g_mst,src,dest)
 
 # Question 1 
 
