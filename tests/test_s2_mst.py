@@ -24,10 +24,23 @@ class Test_MST(unittest.TestCase):
     def test_network05(self):
         g = graph_from_file("input/network.05.in")
         g_mst = g.kruskal()
+
         mst_expected = {1: [(3, 2, 1), (4, 4, 1), (2, 6, 1)],
                         2: [(1, 6, 1)],
                         3: [(1, 2, 1)],
                         4: [(1, 4, 1)],
+                        }
+        self.assertEqual(g_mst.graph, mst_expected)
+
+    def test_my_network06(self):
+        g = graph_from_file("input/my_network.06.in")
+        g_mst = g.kruskal()
+        mst_expected = {1: [(4, 3, 1)],
+                        2: [(4, 4, 1)],
+                        3: [(6, 2, 1)],
+                        4: [(1, 3, 1), (2, 4, 1), (6, 5, 1)],
+                        5: [(6, 5, 1)],
+                        6: [(3, 2, 1), (4, 5, 1), (5, 5, 1)],
                         }
         self.assertEqual(g_mst.graph, mst_expected)
 

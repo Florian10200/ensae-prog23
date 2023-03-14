@@ -37,7 +37,11 @@ class Graph:
         return output
 
     
-    
+# Question 1
+
+# We took the correction of the teacher because it was more clear than our version
+# Graph_from_file is at the end, out of the class Graph
+
     def add_edge(self, node1, node2, power_min, dist=1):
         if node1 not in self.graph:
             self.graph[node1] = []
@@ -52,6 +56,34 @@ class Graph:
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
+
+# Question 2
+
+    def connected_components(self):
+        components_list = []
+        visited_nodes = {node : False for node in self.nodes}
+
+        def exploration(node):
+            component = [node]
+            for neighbor in self.graph[node]:
+                neighbor = neighbor[0]
+                if not visited_nodes[neighbor]:
+                    visited_nodes[neighbor] = True
+                    component += exploration(neighbor)
+            return component
+        
+        for node in self.nodes:
+            if not visited_nodes[node]:
+                components_list.append(exploration(node))
+
+        return components_list
+
+
+    def connected_components_set(self):
+        return set(map(frozenset, self.connected_components()))
+
+
+# Question 3
 
     def get_path_with_power(self, src, dest, power):
         visited_nodes = {node : False for node in self.nodes}
@@ -74,57 +106,10 @@ class Graph:
         raise NotImplementedError
     
 
-    def connected_components(self):
-        components_list = []
-        visited_nodes = {node : False for node in self.nodes}
-
-        def exploration(node):
-            component = [node]
-            for neighbor in self.graph[node]:
-                neighbor = neighbor[0]
-                if not visited_nodes[neighbor]:
-                    visited_nodes[neighbor] = True
-                    component += exploration(neighbor)
-            return component
-        
-        for node in self.nodes:
-            if not visited_nodes[node]:
-                components_list.append(exploration(node))
-
-        return components_list
-
-        raise NotImplementedError
+# Question 4 : Already made
 
 
-    def connected_components_set(self):
-        return set(map(frozenset, self.connected_components()))
-    
-
-    def min_power(self, src, dest):
-        power_list = []
-
-        
-        def binary_search(self,L): #L is a liste
-            left,right = 0,(len(L)-1)
-            while left != right:
-                middle = (left+right)//2
-                path = self.get_path_with_power( src, dest, L[middle])
-                if path == None:
-                    left = middle+1
-                else:
-                    right = middle
-            return(path,L[left])
-
-        for node in self.nodes:
-            for neighbor in self.graph[node]:
-                power_list.append(neighbor[1])
-        F = frozenset(power_list)
-        power_list = sorted(list(F))
-        power_max = power_list[-1]
-        if self.get_path_with_power(src, dest, power_max) == None: #to avoid the case where there is no path
-            return None
-        else:
-            return binary_search(self,power_list)
+# Question 5 : Bonus
 
     def Dijkstra(self,src,dest,power):
         infinity = 1000000000000
@@ -175,6 +160,51 @@ class Graph:
         shortest_path.insert(0,src)
         return(shortest_path)
 
+
+# Question 6
+
+    def binary_search(self,L): #L is a liste
+        left,right = 0,(len(L)-1)
+        while left != right:
+            middle = (left+right)//2
+            path = self.get_path_with_power( src, dest, L[middle])
+            if path == None:
+                left = middle+1
+            else:
+                right = middle
+        return(path,L[left])
+
+    def min_power(self, src, dest):
+        power_list = []
+        for node in self.nodes:
+            for neighbor in self.graph[node]:
+                power_list.append(neighbor[1])
+        F = frozenset(power_list)
+        power_list = sorted(list(F))
+        power_max = power_list[-1]
+        if self.get_path_with_power(src, dest, power_max) == None: #to avoid the case where there is no path
+            return None
+        else:
+            return binary_search(self,power_list)
+
+
+# Question 7 : Bonus
+
+
+# Question 8
+
+
+# Question 9 : Bonus
+
+
+# Question 10 : The function is in main.py
+
+
+# Question 11 : Bonus
+
+
+# Question 12
+
     def kruskal(self):
         g_mst = Graph(range(1,self.nb_nodes+1))
         mst_union_find = union_find({})
@@ -195,6 +225,21 @@ class Graph:
         return(g_mst)
 
 
+# Question 13
+
+# There are already 2 tests implemented
+# However : we had a problem with importing kruskal from graph so we did as it is done in previous tests and we did
+# g.kruskal() instead of doing kruskal(g) as it was previously computed
+# We implemented a new graph "my_network.06.py" whish successfuly passed the test
+
+
+# Question 14
+
+
+
+# Question 1 
+
+# Second part with Graph_from_file
 
 def graph_from_file(filename):
 
