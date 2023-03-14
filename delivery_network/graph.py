@@ -176,35 +176,23 @@ class Graph:
         return(shortest_path)
 
     def kruskal(self):
-
-        def del_occur(L):
-            LL = []
-            for i in L:
-                if not i in LL:
-                    LL.append(i)
-            return(LL)
-        
-        nb_nodes = self.nb_nodes
-        mst = Graph(range(1,nb_nodes+1))
+        g_mst = Graph(range(1,self.nb_nodes+1))
         mst_union_find = union_find({})
         mst_union_find.make_set(list(self.nodes))
         edge_list = []
         for node1 in self.nodes:
             for node2 in self.graph[node1]:
                 node2,power_1_2 = node2[0],node2[1]
-                edge_list.append([power_1_2,max(node1,node2),min(node1,node2)])
-        edge_list_sorted_unic = del_occur(sorted(edge_list))
-        final_edge_list = []
-        for edge in edge_list_sorted_unic:
-            edge.reverse()
-            final_edge_list.append(edge)
-        print(final_edge_list)
-        for edge in final_edge_list:
-            node1,node2,power = edge
+                edge = [power_1_2,min(node1,node2),max(node1,node2)]
+                if not edge in edge_list:
+                    edge_list.append(edge)  
+        sorted_edge_list = sorted(edge_list)
+        for edge in sorted_edge_list:
+            power,node1,node2 = edge
             if mst_union_find.find(node1) != mst_union_find.find(node2):
-                mst.add_edge(node1, node2, power)
+                g_mst.add_edge(node1, node2, power)
                 mst_union_find.op_union(node1, node2)
-        return(mst)
+        return(g_mst)
 
 
 
