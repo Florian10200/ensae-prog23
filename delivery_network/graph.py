@@ -278,7 +278,7 @@ def graph_from_file(filename):
 # Question 10 
 
 def time_estimation(n):
-    with open("input/routes." + str(n) + ".in","r") as file:
+    with open("input/routes." + str(n) + ".in","r") as file: #okok
         time_est = 0
         src = []
         dest = []
