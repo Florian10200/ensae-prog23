@@ -1,10 +1,13 @@
-class union_find:
+import time
+from time import perf_counter
+
+class union_find: # We create union-find class for kruskal algorithm
 
     def __init__(self, parent_node = {}):
-        self.parent_node = parent_node
+        self.parent_node = parent_node # Implementation with dictionary, initialized empty
         self.rank = {}
 
-    def make_set(self, u):
+    def make_set(self, u): # Initialization function 
         for i in u:
             self.parent_node[i] = i
             self.rank[i] = 0
@@ -52,7 +55,7 @@ class Graph:
 # Graph_from_file is at the end, out of the class Graph
 
     def add_edge(self, node1, node2, power_min, dist=1):
-        if node1 not in self.graph:
+        if node1 not in self.graph: # We check if node1, and node2 after, are already in the graph and if not, we add the nodes
             self.graph[node1] = []
             self.nb_nodes += 1
             self.nodes.append(node1)
@@ -61,7 +64,7 @@ class Graph:
             self.nb_nodes += 1
             self.nodes.append(node2)
 
-        self.graph[node1].append((node2, power_min, dist))
+        self.graph[node1].append((node2, power_min, dist)) # We create the edge between node1 and node2
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
@@ -70,7 +73,7 @@ class Graph:
 
     def connected_components(self):
         components_list = []
-        visited_nodes = {node : False for node in self.nodes}
+        visited_nodes = {node : False for node in self.nodes} #
 
         def exploration(node):
             component = [node]
@@ -207,7 +210,8 @@ class Graph:
 # Question 9 : Bonus
 
 
-# Question 10 : The function is in main.py
+
+
 
 
 # Question 11 : Bonus
@@ -220,7 +224,7 @@ class Graph:
         mst_union_find = union_find({})
         mst_union_find.make_set(list(self.nodes))
         edge_list = []
-        for node1 in self.nodes:
+        for node1 in self.graph:
             for node2 in self.graph[node1]:
                 node2,power_1_2 = node2[0],node2[1]
                 edge = [power_1_2,min(node1,node2),max(node1,node2)]
@@ -247,7 +251,7 @@ class Graph:
 
     def min_power_optimized(self, src, dest):
         g_mst = self.kruskal()
-        return min_power(g_mst,src,dest)
+        return g_mst.min_power(src,dest)
 
 # Question 1 
 
@@ -269,4 +273,24 @@ def graph_from_file(filename):
             else:
                 raise Exception("Format incorrect")
     return g
+
+    
+# Question 10 
+
+def time_estimation(n):
+    with open("input/routes." + str(n) + ".in","r") as file:
+        time_est = 0
+        src = []
+        dest = []
+        a = map(int, file.readline().split())
+        for i in range(10):
+            node1,node2,p = map(int, file.readline().split())
+            g = graph_from_file("input/network." + str(n) + ".in")
+            t1 = time.perf_counter()
+
+            opti = g.min_power_optimized(node1,node2)
+            t2 = time.perf_counter()
+            time_est += (t2-t1)
+            print(time_est)
+    return(((list(a)[0])/10)*time_est)
  
