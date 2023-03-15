@@ -2,20 +2,29 @@ class union_find:
 
     def __init__(self, parent_node = {}):
         self.parent_node = parent_node
+        self.rank = {}
 
     def make_set(self, u):
         for i in u:
             self.parent_node[i] = i
+            self.rank[i] = 0
 
     def find(self, k):
         if self.parent_node[k] == k:
             return k
         return self.find(self.parent_node[k])
 
-    def op_union(self, a, b):
-        x = self.find(a)
-        y = self.find(b)
-        self.parent_node[x] = y
+    def op_union(self, x, y):
+        root_of_x = self.find(x)
+        root_of_y = self.find(y)
+        if self.rank[root_of_x] < self.rank[root_of_y]:
+            self.parent_node[root_of_x] = root_of_y
+        elif self.rank[root_of_x] > self.rank[root_of_y]:
+            self.parent_node[root_of_y] = root_of_x
+        else:
+            self.parent_node[root_of_y] = root_of_x
+            self.rank[root_of_x] += 1
+
 
 
 class Graph:
