@@ -279,51 +279,56 @@ class Graph:
 
 # Question 14
 
+
+# Question 16
+
+# We do first a breadth-first search using a queue-structure in order to give a depth to each node of the mst
 def bfs(G):
-    deep_state = {node : None for node in G.nodes}
-    marked_node = {node : False for node in G.nodes}
-    father_power = {node : (None,1000000) for node in G.nodes}
-    root = G.nodes[0]
+    deep_state = {node : None for node in G.nodes} # depth of each node using a dictionary
+    marked_node = {node : False for node in G.nodes} #We need to know which nodes have already been visited
+    father_power = {node : (None,1000000) for node in G.nodes} # We will need to know the fathers to build the path
+    root = G.nodes[0] # We take the first element as the root
     marked_node[root] = True
     deep_state[root] = 0
-    root = node_objet(root)
+    root = node_objet(root) # We convert the root as an element of our queue
     Q = queue()
     Q.enqueue(root)
-    while not Q.is_empty():
+    while not Q.is_empty(): # while the queue is not empty, we wil add the neigbors in the queue if they are not marked
         node = Q.dequeue()
         for neighbor in G.graph[node]:
             neighbor,power = neighbor[0],neighbor[1]
             if not marked_node[neighbor]:
-                deep_state[neighbor] = deep_state[node] + 1
+                deep_state[neighbor] = deep_state[node] + 1 # the depth of a node is the one from the father + 1
                 father_power[neighbor] = node,power
                 Q.enqueue(node_objet(neighbor))
-                marked_node[neighbor] = True
-    return(deep_state,father_power)
+                marked_node[neighbor] = True # We don't forget to mark the nodes
+    return(deep_state,father_power) # We return both the depth of each nodes and their fathers as well as the power between them
+
 
 
 def new_minpower(G, src, dest):
     g_mst = G.kruskal()
-    power_min = 0
+    power_min = 0 # power_min will be the max of the power on the path because a truck will need to have a higher power than each edges
     deep_level,father_power = bfs(g_mst)
-    if deep_level[src] < deep_level[dest]:
+    if deep_level[src] < deep_level[dest]: # We choose to have the source the deeper
         src,dest = dest,src
-    path_src_father = [src]
+    path_src_father = [src] # We creater 2 paths we will concatenate after : src->father and father->dest
     path_father_dest = [dest]
-    moving_node_src,moving_node_dest = src,dest
-    while deep_level[moving_node_src] != deep_level[dest]:
+    moving_node_src,moving_node_dest = src,dest # The moving nodes will be the different fathers until a common father
+    while deep_level[moving_node_src] != deep_level[dest]: # first, we run from the source (the deeper) until a node as deep as the dest
         moving_node_src,power = father_power[moving_node_src]
         power_min = max(power_min,power)
         path_src_father.append(moving_node_src)
-    while moving_node_src != moving_node_dest:
+    while moving_node_src != moving_node_dest: # Then, we take the fathers of each sides until we got the same (the root in the worst case)
         moving_node_src,power_src = father_power[moving_node_src]
         moving_node_dest,power_dest = father_power[moving_node_dest]
         path_src_father.append(moving_node_src)
         path_father_dest.append(moving_node_dest)
         power_min = max(power_min,power_dest,power_src)
-    path_src_father = path_src_father[0:len(path_src_father)-1]
-    path_father_dest.reverse()
-    path = path_src_father + path_father_dest
-    return(path,power_min)
+    path_src_father = path_src_father[0:len(path_src_father)-1] #the common ancestor is present once in each list, we remove it from the first list
+    path_father_dest.reverse() # we had dest-> father while we need father->dest
+    path = path_src_father + path_father_dest # src->father->dest = src->dest which is our path
+    return(path,power_min) #We return the path and the power_min needed for that path
     
     
 
