@@ -28,6 +28,36 @@ class union_find: # We create union-find class for kruskal algorithm
             self.parent_node[root_of_y] = root_of_x
             self.rank[root_of_x] += 1
 
+class node_objet:
+
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class queue:
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def is_empty(self):
+        return not self.head
+
+    def enqueue(self, new_node):
+        if self.is_empty():
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+
+    def dequeue(self):
+        if self.is_empty():
+            return "You queue is empty"
+        else:
+            deleted_element = self.head.value
+            self.head = self.head.next
+            return(deleted_element)
 
 
 class Graph:
@@ -68,6 +98,20 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist)) # We create the edge between node1 and node2
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
+
+
+    t_test = Graph([1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    t_test.add_edge(1,2,1)
+    t_test.add_edge(1,3,1)
+    t_test.add_edge(2,4,1)
+    t_test.add_edge(2,5,1)
+    t_test.add_edge(2,6,1)
+    t_test.add_edge(3,7,1)
+    t_test.add_edge(7,8,1)
+    t_test.add_edge(7,9,1)
+
+
 
 
 # Question 2
@@ -235,9 +279,39 @@ class Graph:
 
 # Question 14
 
+def bfs(G):
+    deep_state = {node : None for node in G.nodes}
+    marked_node = {node : False for node in G.nodes}
+    root = G.nodes[0]
+    marked_node[root] = True
+    deep_state[root] = 0
+    root = node_objet(root)
+    Q = queue()
+    Q.enqueue(root)
+    while not Q.is_empty():
+        node = Q.dequeue()
+        for neighbor in G.graph[node]:
+            neighbor = neighbor[0]
+            if not marked_node[neighbor]:
+                deep_state[neighbor] = deep_state[node] + 1
+                Q.enqueue(node_objet(neighbor))
+                marked_node[neighbor] = True
+    return(deep_state)
+
+
+
+
+
+
+
     def min_power_optimized(self, src, dest):
         g_mst = self.kruskal()
         return g_mst.min_power(src,dest) # We know that it only works with small graphs : we will improve it
+
+
+
+
+
 
 # Question 1 
 
