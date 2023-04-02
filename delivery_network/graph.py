@@ -280,6 +280,11 @@ class Graph:
 # Question 14
 
 
+    def min_power_optimized(self, src, dest):
+        g_mst = self.kruskal()
+        return g_mst.min_power(src,dest) # We know that it only works with small graphs : we will improve it
+
+
 # Question 16
 
 # We do first a breadth-first search using a queue-structure in order to give a depth to each node of the mst
@@ -305,9 +310,7 @@ def bfs(G):
     return(deep_state,father_power) # We return both the depth of each nodes and their fathers as well as the power between them
 
 
-
-def new_minpower(G, src, dest):
-    g_mst = G.kruskal()
+def new_minpower_aux(g_mst, src, dest): #main function but with the g_mst so that we only calculate hime once for all the routes
     power_min = 0 # power_min will be the max of the power on the path because a truck will need to have a higher power than each edges
     deep_level,father_power = bfs(g_mst)
     if deep_level[src] < deep_level[dest]: # We choose to have the source the deeper
@@ -330,22 +333,9 @@ def new_minpower(G, src, dest):
     path = path_src_father + path_father_dest # src->father->dest = src->dest which is our path
     return(path,power_min) #We return the path and the power_min needed for that path
     
-    
-
-
-
-
-
-
-
-    def min_power_optimized(self, src, dest):
-        g_mst = self.kruskal()
-        return g_mst.min_power(src,dest) # We know that it only works with small graphs : we will improve it
-
-
-
-
-
+def new_minpower(G,src,dest): #The final function
+    g_mst = G.kruskal()
+    return new_minpower_aux(g_mst, src, dest)
 
 # Question 1 
 
@@ -391,3 +381,64 @@ def time_estimation(n):
  # http://www.monlyceenumerique.fr/nsi_terminale/a/a1_algo_arbre.php
 
  
+
+# Séance 4
+
+B = 25*(10**9)
+
+# Question 18
+
+def route_from_file(filename):
+    itineraries = []
+    with open(filename, "r") as file:
+        nb_itinerary = map(int, file.readline().split())
+        for _ in range(nb_itinerary):
+            src,dest,profit = map(int, file.readline().split())
+            itineraries.append(src,dest,profit)
+    return(itineraries)
+
+def truck_from_file(filename):
+    trucks = []
+    with open(filename, "r") as file:
+        nb_models = map(int, file.readline().split())
+        for _ in nb_models:
+            power,cost = map(int, file.readline().split())
+            trucks.append(power,cost)
+    return(trucks)
+
+def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power
+    good_truck = liste_truck[0]
+    i = 0
+    while good_truck[0] < power_min:
+        i += 1
+        good_truck = liste_truck[i]
+    return(good_truck)
+
+def stupid_solution(graphe_filename,route_filename,truck_filename):
+    my_B = B
+    G = graph_from_file(graphe_filename)
+    list_routes = route_from_file(route_filename)
+    list_trucks = truck_from_file(truck_filename)
+    list_trucks.sort()
+    list_path,list_powermin,list_profit = [],[],[]
+    list_trucks_affected = []
+    for route in list_routes:
+        src,dest,profit = route
+        path,power_min = new_minpower(G, src, dest)
+        list_path.append(path)
+        list_powermin.append(power_min)
+        list_profit.append(profit)
+    for i in range(len(list_powermin)):
+        if not my_B >= 0:
+            return("lack money")
+        good_truck = optimized_truck(list_trucks, list_powermin[i])
+        my_B -= good_truck[1]
+        list_trucks_affected.append(good_truck)
+    profit_total = sum(list_profit)
+    return(list_trucks_affected, profit_total)
+
+
+
+
+# On peut faire une recherche dichotomique pour trouver le premier camion qui a la puissance de réaliser un trajet 
+
