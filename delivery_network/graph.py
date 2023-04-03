@@ -422,15 +422,16 @@ def knapsack(G,list_trucks, list_route):
     for association in list_trucks_affected:
         utility, cost = association[1][2],association[0][1]
         efficency = utility/cost
-        list_efficency.append(efficency,association)
-    list_efficency.sort()
+        list_efficency.append((efficency,association))
+    list_efficency.sort(reverse=True)
     for index_itinerary in range(len(list_efficency)):
-        cost = list_efficency[1][0][1]
+        print(list_efficency)
+        cost = list_efficency[index_itinerary][1][0][1]
         if cost + total_cost < my_B:
-            selected_itineraries[index_itinerary] = 1
+            selected_itineraries.append(1)
             total_cost += cost
         else:
-            selected_itineraries[index_itinerary] = 0
+            selected_itineraries.append(0)
     return(selected_itineraries)
 
 
