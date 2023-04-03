@@ -100,20 +100,6 @@ class Graph:
         self.nb_edges += 1
 
 
-    t_test = Graph([1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-    t_test.add_edge(1,2,1)
-    t_test.add_edge(1,3,1)
-    t_test.add_edge(2,4,1)
-    t_test.add_edge(2,5,1)
-    t_test.add_edge(2,6,1)
-    t_test.add_edge(3,7,1)
-    t_test.add_edge(7,8,1)
-    t_test.add_edge(7,9,1)
-
-
-
-
 # Question 2
 # The complexity of this algorithm is O(V+E) where V = number of nodes and E = number of edges
 
@@ -371,8 +357,7 @@ def time_estimation(n):
             node1,node2,p = map(int, file.readline().split())
             g = graph_from_file("input/network." + str(n) + ".in")
             t1 = time.perf_counter()
-
-            opti = g.min_power_optimized(node1,node2)
+            opti = new_minpower(g, node1, node2)
             t2 = time.perf_counter()
             time_est += (t2-t1)
             print(time_est)
@@ -391,19 +376,19 @@ B = 25*(10**9)
 def route_from_file(filename):
     itineraries = []
     with open(filename, "r") as file:
-        nb_itinerary = map(int, file.readline().split())
+        nb_itinerary = int(file.readline())
         for _ in range(nb_itinerary):
             src,dest,profit = map(int, file.readline().split())
-            itineraries.append(src,dest,profit)
+            itineraries.append((src,dest,profit))
     return(itineraries)
 
 def truck_from_file(filename):
     trucks = []
     with open(filename, "r") as file:
-        nb_models = map(int, file.readline().split())
-        for _ in nb_models:
+        nb_models = int(file.readline())
+        for _ in range(nb_models):
             power,cost = map(int, file.readline().split())
-            trucks.append(power,cost)
+            trucks.append((power,cost))
     return(trucks)
 
 def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power
