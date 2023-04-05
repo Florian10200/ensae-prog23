@@ -7,17 +7,12 @@ import time
 from time import perf_counter
 
 
-G = graph_from_file("input/network.1.in")
-list_trucks = truck_from_file("tests/trucks.2.in")
-list_route = route_from_file("input/routes.1.in")
-
-
 def new_time_estimation(n):
     with open("input/routes." + str(n) + ".in","r") as file:
         time_est = 0
         a = int(file.readline()) # We save the amount of itineraries
         g = graph_from_file("input/network." + str(n) + ".in")
-        g.kruskal
+        g.kruskal()
         for i in range(10): # Average with 10 itineraries
             node1,node2,p = map(int, file.readline().split())
             t1 = time.perf_counter()
@@ -25,5 +20,10 @@ def new_time_estimation(n):
             opti = new_minpower_aux(g, node1, node2)
             t2 = time.perf_counter()
             time_est += (t2-t1)
+
+
+G = graph_from_file("input/network.2.in")
+list_trucks = truck_from_file("tests/trucks.2.in")
+list_route = route_from_file("input/routes.2.in")[:20]
 
 print(knapsack(G, list_trucks, list_route))
