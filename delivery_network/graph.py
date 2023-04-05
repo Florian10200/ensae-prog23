@@ -403,16 +403,15 @@ def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power : 
             left = middle + 1
     return(liste_truck[left])
     
-def only_useful_truck(list_trucks):
-    list_trucks.sort(key=lambda only_useful_truck : only_useful_truck[1])
+def only_useful_truck(list_trucks): # To remove useless trucks : those with higher cost thant other but less powerful
+    list_trucks.sort(key=lambda only_useful_truck : only_useful_truck[1]) #We sort the list_truck by cost
     useful_trucks = []
-    moving_power = 0
+    moving_power = 0 #it will be the power of the different truck
     for truck in list_trucks:
-        if moving_power < truck[0]:
+        if moving_power < truck[0]: #We don't take the truck if the power is lower than the former one (whose the cost whose lower due to the sort)
             useful_trucks.append(truck)
             moving_power = truck[0]
     return(useful_trucks)
-
 
 
 
@@ -430,24 +429,24 @@ def truck_affectation(G,list_route,list_trucks):
     return(list_trucks_affected)
 
 def knapsack(G,list_trucks, list_route):
-    my_B = B
-    total_cost = 0
-    list_trucks_affected = truck_affectation(G, list_route, list_trucks)
-    list_efficency = []
-    selected_itineraries = []
-    for association in list_trucks_affected:
+    my_B = B #We have our budjet
+    total_cost = 0 #At the beginning, nothing was buy so our total cost is null
+    list_trucks = only_useful_truck(list_trucks)
+    list_trucks_affected = truck_affectation(G, list_route, list_trucks) #for each route, we associate it the truck with the less power but enough powerful to do it (which is by doing so the cheapest truck thanks to only_useful_truck)
+    list_efficency = [] #a list of efficency corresponding to the quotient of the profit of a route by the cost of the associated truck
+    selected_itineraries = [] #only the routes with the highest efficency will be selected
+    for association in list_trucks_affected: #We create the list of efficency
         utility, cost = association[1][2],association[0][1]
         efficency = utility/cost
         list_efficency.append((efficency,association))
-    list_efficency.sort(reverse=True)
+    list_efficency.sort(reverse=True) #We sort it by descending in order to have the highest efficency at the beginning
     for index_itinerary in range(len(list_efficency)):
-        print(list_efficency)
         cost = list_efficency[index_itinerary][1][0][1]
-        if cost + total_cost < my_B:
-            selected_itineraries.append(1)
-            total_cost += cost
+        if cost + total_cost < my_B: #We add a route by descending efficency and only if it is in our budget : maybe there is further a route with a lower profit but which need a truck which is still in our budget
+            selected_itineraries.append(1) #A one => the route is selected and the position of the one indicates which route with which truck
+            total_cost += cost #We actualize our spendings
         else:
-            selected_itineraries.append(0)
+            selected_itineraries.append(0) #A 0 means we don't select this route
     return(selected_itineraries)
 
 
