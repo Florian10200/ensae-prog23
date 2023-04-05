@@ -371,7 +371,7 @@ def time_estimation(n):
 # Séance 4
 
 B = 25*(10**9)
-our_B = 5000*10*2
+our_B = 5000*10*2*20
 
 # Question 18
 
@@ -394,7 +394,7 @@ def truck_from_file(filename):
     return(trucks)
 
 def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power : we process by dichotomic search
-    left, right = 0, len(liste_truck)
+    left, right = 0, (len(liste_truck)-1)
     while left != right:
         middle = (left+right)//2
         truck_applicant = liste_truck[middle]
@@ -402,7 +402,10 @@ def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power : 
             right = middle
         else:
             left = middle + 1
-    return(liste_truck[left])
+    if liste_truck[right][0] >= power_min:
+        return(liste_truck[right])
+    else:
+        return([None,None])
     
 def only_useful_truck(list_trucks): # To remove useless trucks : those with higher cost thant other but less powerful
     list_trucks.sort(key=lambda only_useful_truck : only_useful_truck[1]) #We sort the list_truck by cost
@@ -429,6 +432,7 @@ def truck_affectation(G,list_route,list_trucks):
     for i in range(len(list_powermin)):
         good_truck = optimized_truck(list_trucks, list_powermin[i])
         list_trucks_affected.append([good_truck, list_route[i], list_powermin[i]])
+    print(list_trucks_affected)
     return(list_trucks_affected)
 
 def knapsack(G,list_trucks, list_route):
@@ -444,16 +448,17 @@ def knapsack(G,list_trucks, list_route):
         list_efficency.append((efficency,association))
     list_efficency.sort(reverse=True) #We sort it by descending in order to have the highest efficency at the beginning
     for index_itinerary in range(len(list_efficency)):
-        cost = list_efficency[index_itinerary][1][0][1]
-        association = list_efficency[index_itinerary][1][0:3]
-        profit = association[1][2]
-        if cost + total_cost < my_B: #We add a route by descending efficency and only if it is in our budget : maybe there is further a route with a lower profit but which need a truck which is still in our budget
-            selected_itineraries.append(association) 
-            list_profit.append(profit)
-            total_cost += cost #We actualize our spendings
-        else:
-            selected_itineraries.append(None) 
-            list_profit.append(0)
+        if list_efficency[index_itinerary][0] != [None,None]:
+            cost = list_efficency[index_itinerary][1][0][1]
+            association = list_efficency[index_itinerary][1][0:3]
+            profit = association[1][2]
+            if cost + total_cost < my_B: #We add a route by descending efficency and only if it is in our budget : maybe there is further a route with a lower profit but which need a truck which is still in our budget
+                selected_itineraries.append(association) 
+                list_profit.append(profit)
+                total_cost += cost #We actualize our spendings
+            else:
+                selected_itineraries.append(None) 
+                list_profit.append(0)
     total_profit = sum(list_profit)
     return(selected_itineraries, total_cost, total_profit)
 
