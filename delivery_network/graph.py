@@ -442,17 +442,13 @@ def knapsack(G,list_trucks, list_route):
     list_efficency.sort(reverse=True) #We sort it by descending in order to have the highest efficency at the beginning
     for index_itinerary in range(len(list_efficency)):
         cost = list_efficency[index_itinerary][1][0][1]
+        association = list_efficency[index_itinerary][1][0:3]
         if cost + total_cost < my_B: #We add a route by descending efficency and only if it is in our budget : maybe there is further a route with a lower profit but which need a truck which is still in our budget
-            selected_itineraries.append(1) #A one => the route is selected and the position of the one indicates which route with which truck
+            selected_itineraries.append(association) 
             total_cost += cost #We actualize our spendings
         else:
-            selected_itineraries.append(0) #A 0 means we don't select this route
+            selected_itineraries.append(None) 
     return(selected_itineraries)
 
 
-
-
-
-
-# On peut faire une recherche dichotomique pour trouver le premier camion qui a la puissance de réaliser un trajet 
 

@@ -26,5 +26,4 @@ def new_time_estimation(n):
             t2 = time.perf_counter()
             time_est += (t2-t1)
 
-print(only_useful_truck(list_trucks))
-
+print(knapsack(G, list_trucks, list_route))
