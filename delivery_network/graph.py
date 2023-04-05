@@ -392,13 +392,29 @@ def truck_from_file(filename):
             trucks.append((power,cost))
     return(trucks)
 
-def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power
-    good_truck = liste_truck[0]
-    i = 0
-    while good_truck[0] < power_min:
-        i += 1
-        good_truck = liste_truck[i]
-    return(good_truck)
+def optimized_truck(liste_truck, power_min): # liste_truck is sorted by power : we process by dichotomic search
+    left, right = 0, len(liste_truck)
+    while left != right:
+        middle = (left+right)//2
+        truck_applicant = liste_truck[middle]
+        if truck_applicant[0] >= power_min:
+            right = middle
+        else:
+            left = middle + 1
+    return(liste_truck[left])
+    
+def only_useful_truck(list_trucks):
+    list_trucks.sort(key=lambda only_useful_truck : only_useful_truck[1])
+    useful_trucks = []
+    moving_power = 0
+    for truck in list_trucks:
+        if moving_power < truck[0]:
+            useful_trucks.append(truck)
+            moving_power = truck[0]
+    return(useful_trucks)
+
+
+
 
 def truck_affectation(G,list_route,list_trucks):
     list_trucks.sort() #We sort the trucks by the first argument which is the power
