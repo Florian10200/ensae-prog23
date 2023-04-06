@@ -3,12 +3,13 @@ import sys
 sys.path.append("delivery_network")
 
 from graph import graph_from_file
+from graph import kruskal
 import unittest   # The test framework
 
 class Test_MST(unittest.TestCase):
     def test_network00(self):
         g = graph_from_file("input/network.00.in")
-        g_mst = g.kruskal()
+        g_mst = kruskal(g)
         mst_expected = {1: [(8, 0, 1), (2, 11, 1), (6, 12, 1)],
                         2: [(5, 4, 1), (3, 10, 1), (1, 11, 1)],
                         3: [(4, 4, 1), (2, 10, 1)],
@@ -23,7 +24,7 @@ class Test_MST(unittest.TestCase):
 
     def test_network05(self):
         g = graph_from_file("input/network.05.in")
-        g_mst = g.kruskal()
+        g_mst = kruskal(g)
 
         mst_expected = {1: [(3, 2, 1), (4, 4, 1), (2, 6, 1)],
                         2: [(1, 6, 1)],
@@ -34,7 +35,7 @@ class Test_MST(unittest.TestCase):
 
     def test_my_network06(self):
         g = graph_from_file("input/my_network.06.in")
-        g_mst = g.kruskal()
+        g_mst = kruskal(g)
         mst_expected = {1: [(4, 3, 1)],
                         2: [(4, 4, 1)],
                         3: [(6, 2, 1)],

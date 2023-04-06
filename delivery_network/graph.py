@@ -238,20 +238,20 @@ class Graph:
 
 # Question 12
 
-    def kruskal(self):
-        list_edges = self.list_edges
-        i = 0
-        g_mst = Graph(range(1,self.nb_nodes+1)) # Initialization of our mst
-        mst_union_find = union_find({})
-        mst_union_find.make_set(list(self.nodes)) # Initialization of our union-find structure to know if another edge create a cycle or not
-        list_edges.sort(key=lambda l : l[2]) # We have collected all the edges and make sure we did not take a edge twice, and sorted them by power
-        while g_mst.nb_edges != self.nb_nodes-1:
-            node1,node2,power = list_edges[i]
-            i += 1
-            if mst_union_find.find(node1) != mst_union_find.find(node2): # We added the edges only if it does not create a cycle
-                g_mst.add_edge(node1, node2, power)
-                mst_union_find.op_union(node1, node2)
-        return(g_mst)
+def kruskal(G):
+    list_edges = G.list_edges
+    i = 0
+    g_mst = Graph(range(1,G.nb_nodes+1)) # Initialization of our mst
+    mst_union_find = union_find({})
+    mst_union_find.make_set(list(G.nodes)) # Initialization of our union-find structure to know if another edge create a cycle or not
+    list_edges.sort(key=lambda l : l[2]) # We have collected all the edges and make sure we did not take a edge twice, and sorted them by power
+    while g_mst.nb_edges != G.nb_nodes-1:
+        node1,node2,power = list_edges[i]
+        i += 1
+        if mst_union_find.find(node1) != mst_union_find.find(node2): # We added the edges only if it does not create a cycle
+            g_mst.add_edge(node1, node2, power)
+            mst_union_find.op_union(node1, node2)
+    return(g_mst)
 
 
 # Question 13
@@ -318,8 +318,8 @@ def new_minpower_aux(g_mst, src, dest): #main function but with the g_mst so tha
     return(path,power_min) #We return the path and the power_min needed for that path
     
 def new_minpower(G,src,dest): #The final function
-    G.kruskal
-    return new_minpower_aux(G, src, dest)
+    g_mst = G.kruskal()
+    return new_minpower_aux(g_mst, src, dest)
 
 # Question 1 
 
@@ -369,7 +369,7 @@ def time_estimation(n):
 # Séance 4
 
 B = 25*(10**9)
-our_B = 5000*10*2*20
+our_B = B
 
 # Question 18
 
@@ -422,7 +422,8 @@ def truck_affectation(G,list_route,list_trucks):
     list_powermin = []
     list_trucks_affected = []
     list_trucks = only_useful_truck(list_trucks)
-    G.kruskal
+    G.kruskal()
+    print(G)
     for route in list_route: #For each route, we will identify the cheapest truck to do it
         src,dest,profit = route
         path,power_min = new_minpower_aux(G, src, dest)
@@ -430,7 +431,6 @@ def truck_affectation(G,list_route,list_trucks):
     for i in range(len(list_powermin)):
         good_truck = optimized_truck(list_trucks, list_powermin[i])
         list_trucks_affected.append([good_truck, list_route[i], list_powermin[i]])
-    print(list_trucks_affected)
     return(list_trucks_affected)
 
 def knapsack(G,list_trucks, list_route):
