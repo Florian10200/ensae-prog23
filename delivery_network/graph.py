@@ -67,6 +67,7 @@ class Graph:
         self.graph = dict([(n, []) for n in nodes])
         self.nb_nodes = len(nodes)
         self.nb_edges = 0
+        self.list_edges = []
     
 
     def __str__(self):
@@ -98,6 +99,7 @@ class Graph:
         self.graph[node1].append((node2, power_min, dist)) # We create the edge between node1 and node2
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
+        self.list_edges.append((node1, node2, power_min))
 
 
 # Question 2
@@ -237,19 +239,15 @@ class Graph:
 # Question 12
 
     def kruskal(self):
+        list_edges = self.list_edges
+        i = 0
         g_mst = Graph(range(1,self.nb_nodes+1)) # Initialization of our mst
         mst_union_find = union_find({})
         mst_union_find.make_set(list(self.nodes)) # Initialization of our union-find structure to know if another edge create a cycle or not
-        edge_list = []
-        for node1 in self.graph:
-            for node2 in self.graph[node1]:
-                node2,power_1_2 = node2[0],node2[1]
-                edge = [power_1_2,min(node1,node2),max(node1,node2)]
-                if not edge in edge_list:
-                    edge_list.append(edge)  
-        sorted_edge_list = sorted(edge_list) # We have collected all the edges and make sure we did not take a edge twice, and sorted them by power
-        for edge in sorted_edge_list:
-            power,node1,node2 = edge
+        list_edges.sort(key=lambda l : l[2]) # We have collected all the edges and make sure we did not take a edge twice, and sorted them by power
+        while g_mst.nb_edges != self.nb_nodes-1:
+            node1,node2,power = list_edges[i]
+            i += 1
             if mst_union_find.find(node1) != mst_union_find.find(node2): # We added the edges only if it does not create a cycle
                 g_mst.add_edge(node1, node2, power)
                 mst_union_find.op_union(node1, node2)

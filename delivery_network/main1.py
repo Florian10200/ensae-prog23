@@ -22,8 +22,9 @@ def new_time_estimation(n):
             time_est += (t2-t1)
 
 
-G = graph_from_file("input/network.3.in")
+G = graph_from_file("input/network.1.in")
 list_trucks = truck_from_file("tests/trucks.0.in")
 list_route = route_from_file("input/routes.3.in")[:5]
 
-print(knapsack(G, list_trucks, list_route))
+
+print(G.kruskal())
