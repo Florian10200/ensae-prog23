@@ -362,14 +362,11 @@ def time_estimation(n):
             print(time_est)
     return(((list(a)[0])/10)*time_est)
  
- # http://www.monlyceenumerique.fr/nsi_terminale/a/a1_algo_arbre.php
-
- 
 
 # Séance 4
 
 B = 25*(10**9)
-our_B = B
+our_B = 50000
 
 # Question 18
 
@@ -421,25 +418,50 @@ def truck_affectation(G,list_route,list_trucks):
     list_trucks.sort() #We sort the trucks by the first argument which is the power
     list_powermin = []
     list_trucks_affected = []
-    list_trucks = only_useful_truck(list_trucks)
-    G.kruskal()
-    print(G)
+    g_mst = kruskal(G)
     for route in list_route: #For each route, we will identify the cheapest truck to do it
         src,dest,profit = route
-        path,power_min = new_minpower_aux(G, src, dest)
+        path,power_min = new_minpower_aux(g_mst, src, dest)
         list_powermin.append(power_min)
     for i in range(len(list_powermin)):
         good_truck = optimized_truck(list_trucks, list_powermin[i])
         list_trucks_affected.append([good_truck, list_route[i], list_powermin[i]])
     return(list_trucks_affected)
 
-def knapsack(G,list_trucks, list_route):
+def knapsack_cost(G,list_trucks, list_route):
+    list_trucks = only_useful_truck(list_trucks)
+    my_B = our_B #We have our budjet, to not delete the initial value
+    total_cost = 0 #At the beginning, nothing was buy so our total cost is null
+    list_trucks_affected = truck_affectation(G, list_route, list_trucks) #for each route, we associate it the truck with the less power but enough powerful to do it (which is by doing so the cheapest truck thanks to only_useful_truck)
+    list_trucks_affected.sort(key=lambda l : l[0][1], reverse=True)
+    selected_itineraries = [] #only the routes with the highest efficency will be selected
+    not_selected_itineraries = []
+    list_profit = []
+    for index_itinerary in range(len(list_trucks_affected)):
+        cost = list_trucks_affected[index_itinerary][0][1]
+        association = list_trucks_affected[index_itinerary]
+        profit = association[1][2]
+        if cost + total_cost < my_B: #We add a route by descending efficency and only if it is in our budget : maybe there is further a route with a lower profit but which need a truck which is still in our budget
+            selected_itineraries.append(association) 
+            list_profit.append(profit)
+            total_cost += cost #We actualize our spendings
+        else:
+            selected_itineraries.append(None)
+            not_selected_itineraries.append(association)
+            list_profit.append(0)
+    total_profit = sum(list_profit)
+    return(selected_itineraries, not_selected_itineraries, total_cost, total_profit)
+
+
+def knapsack_efficency(G,list_trucks, list_route):
+    list_trucks = only_useful_truck(list_trucks)
     my_B = our_B #We have our budjet, to not delete the initial value
     total_cost = 0 #At the beginning, nothing was buy so our total cost is null
     list_trucks_affected = truck_affectation(G, list_route, list_trucks) #for each route, we associate it the truck with the less power but enough powerful to do it (which is by doing so the cheapest truck thanks to only_useful_truck)
     list_efficency = [] #a list of efficency corresponding to the quotient of the profit of a route by the cost of the associated truck
     selected_itineraries = [] #only the routes with the highest efficency will be selected
     list_profit = []
+    not_selected_itineraries = []
     for association in list_trucks_affected: #We create the list of efficency
         utility, cost, profit = association[1][2],association[0][1],association[1][2]
         efficency = utility/cost
@@ -456,9 +478,10 @@ def knapsack(G,list_trucks, list_route):
                 total_cost += cost #We actualize our spendings
             else:
                 selected_itineraries.append(None) 
+                not_selected_itineraries.append(association)
                 list_profit.append(0)
     total_profit = sum(list_profit)
-    return(selected_itineraries, total_cost, total_profit)
+    return(selected_itineraries,not_selected_itineraries, total_cost, total_profit)
 
 
 

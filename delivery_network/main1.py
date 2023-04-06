@@ -2,7 +2,7 @@ import sys
 sys.path.append("delivery_network/")
 
 from graph import Graph, graph_from_file, time_estimation, union_find, new_minpower, new_minpower_aux, bfs, route_from_file, truck_from_file
-from graph import truck_affectation, knapsack, optimized_truck, only_useful_truck, kruskal
+from graph import truck_affectation, knapsack_cost, knapsack_efficency, optimized_truck, only_useful_truck, kruskal
 import time
 from time import perf_counter
 
@@ -23,8 +23,8 @@ def new_time_estimation(n):
         print(time_est*a/10)
 
 
-G = graph_from_file("input/network.3.in")
+G = graph_from_file("input/network.2.in")
 list_trucks = truck_from_file("tests/trucks.2.in")
-list_route = route_from_file("input/routes.2.in")[:20]
+list_route = route_from_file("input/routes.2.in")[:10]
 
-new_time_estimation(3)
+print(knapsack_cost(G, list_trucks, list_route))
